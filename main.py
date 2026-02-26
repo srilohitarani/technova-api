@@ -21,8 +21,14 @@ async def add_skip_header(request, call_next):
     return response
 
 @app.get("/execute")
-def execute(q: str = Query(...)):
+def execute(q: str = Query(None)):
     
+    if q is None:
+        return JSONResponse(
+            content={"message": "Ready. Use ?q=your question"},
+            headers={"ngrok-skip-browser-warning": "true"}
+        )
+
     match = re.search(r'ticket\s+(\d+)', q, re.IGNORECASE)
     if match:
         return JSONResponse(
